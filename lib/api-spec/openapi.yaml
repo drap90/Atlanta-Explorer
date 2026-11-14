@@ -31,7 +31,16 @@ paths:
         "400":
           description: Invalid question
         "429":
-          description: Please try again shortly
+          description: Per-instance traffic limit or shared daily Gemini allowance reached
+          headers:
+            Retry-After:
+              description: Seconds until retry; daily allowance resets at midnight UTC
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LocalLimitError"
         "503":
           description: The AI guide is temporarily unavailable
   /healthz:
@@ -49,6 +58,15 @@ paths:
                 $ref: "#/components/schemas/HealthStatus"
 components:
   schemas:
+    LocalLimitError:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: string
+        code:
+          type: string
+          enum: [DAILY_LIMIT_REACHED]
     LocalQuestion:
       type: object
       required: [question]

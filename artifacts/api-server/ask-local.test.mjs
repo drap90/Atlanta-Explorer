@@ -10,6 +10,20 @@ const bundle = await build({
   entryPoints: [new URL("./src/lib/ask-local.ts", import.meta.url).pathname],
   bundle: true, write: false, platform: "node", format: "esm",
   define: { __ATLANTA_GUIDE_FACTS__: JSON.stringify(facts) },
+  // These are provider/language unit tests; the real shared store and failures
+  // are exercised separately by tests/daily-usage.test.ts.
+  plugins: [{
+    name: "isolate-usage-store",
+    setup(builder) {
+      builder.onResolve({ filter: /\/ask-local-usage$/ }, () => ({
+        path: "test-usage-store", namespace: "test-usage-store",
+      }));
+      builder.onLoad({ filter: /.*/, namespace: "test-usage-store" }, () => ({
+        contents: "export async function reserveDailyAttempt() {}",
+        loader: "js",
+      }));
+    },
+  }],
 });
 const { askGemini, limitAnswer, LOCAL_SYSTEM_PROMPT } = await import(
   `data:text/javascript;base64,${Buffer.from(bundle.outputFiles[0].text).toString("base64")}`

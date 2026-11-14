@@ -1,6 +1,7 @@
 import { Router, type IRouter } from "express";
 import { AskLocalBody, AskLocalResponse } from "@workspace/api-zod";
 import { askGemini } from "../lib/ask-local";
+import { DailyLimitReached } from "../lib/ask-local-usage";
 
 const router: IRouter = Router();
 const FRIENDLY_ERROR = "Sorry, our AI guide is taking a little break. Please try again in a moment, or check the official site for the place you’re visiting.";
@@ -36,6 +37,14 @@ router.post("/ask-local", async (req, res): Promise<void> => {
     const answer = await askGemini(parsed.data.question.trim(), parsed.data.language);
     res.json(AskLocalResponse.parse({ answer }));
   } catch (error) {
+    if (error instanceof DailyLimitReached) {
+      res.setHeader("Retry-After", String(error.retryAfter));
+      res.status(429).json({
+        code: "DAILY_LIMIT_REACHED",
+        error: "Our AI guide has reached its daily allowance. Please try again after midnight UTC, or explore the recommendations on this page.",
+      });
+      return;
+    }
     const code = error instanceof Error && /^AI_[A-Z0-9_]+$/.test(error.message)
       ? error.message : "AI_NETWORK_ERROR";
     req.log.warn({ code }, "Ask a Local could not complete an AI request");

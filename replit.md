@@ -38,6 +38,10 @@ _Populate as you build — explicit user instructions worth remembering across s
 
 ## Gotchas
 
+- Ask a Local defaults to **100 Gemini attempts per UTC day**, shared across instances in PostgreSQL. Set server-only `ASK_LOCAL_DAILY_LIMIT` to a positive integer to change it. This is a request cap, not a dollar budget; provider pricing may change.
+- Each initial Gemini call and transient retry reserves a slot before contacting the provider. Failed/aborted calls still count, conservatively. Missing/invalid quota configuration or an unavailable usage store stops AI requests rather than bypassing protection.
+- Daily counts survive restarts and are not reset by changing the allowance. No questions, answers, or visitor identifiers are stored. Keep all instances connected to the same database and configured with the same allowance. Limits apply only to this endpoint, not other uses of the Gemini key.
+
 _Populate as you build — sharp edges, "always run X before Y" rules._
 
 ## Pointers

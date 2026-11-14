@@ -22,6 +22,7 @@ import type {
 import type {
   HealthStatus,
   LocalAnswer,
+  LocalLimitError,
   LocalQuestion
 } from './api.schemas';
 
@@ -94,7 +95,7 @@ return customFetch<LocalAnswer>(getAskLocalUrl(),
 
 export const getAskLocalMutationKey = () => ['askLocal'] as const;
 
-export const getAskLocalMutationOptions = <TError = ErrorType<void>,
+export const getAskLocalMutationOptions = <TError = ErrorType<void | LocalLimitError>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof askLocal>>, TError,AskLocalMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
 ): UseMutationOptions<Awaited<ReturnType<typeof askLocal>>, TError,AskLocalMutationVariables, TContext> => {
 
@@ -123,13 +124,13 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type AskLocalMutationResult = NonNullable<Awaited<ReturnType<typeof askLocal>>>
     export type AskLocalMutationBody = BodyType<LocalQuestion>
-    export type AskLocalMutationError = ErrorType<void>
+    export type AskLocalMutationError = ErrorType<void | LocalLimitError>
     export type AskLocalMutationVariables = {data: BodyType<LocalQuestion>}
 
     /**
  * @summary Ask the Atlanta AI guide a question about this page
  */
-export const useAskLocal = <TError = ErrorType<void>,
+export const useAskLocal = <TError = ErrorType<void | LocalLimitError>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof askLocal>>, TError,AskLocalMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
  ): UseMutationResult<
         Awaited<ReturnType<typeof askLocal>>,

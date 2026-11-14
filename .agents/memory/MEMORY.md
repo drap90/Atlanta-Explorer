@@ -1,2 +1,3 @@
 - [Guide implementation constraints](guide-constraints.md) — Atlanta guide must remain plain HTML and CSS despite the web artifact scaffold.
 - [Gemini availability validation](gemini-validation.md) — verify a generation request; model discovery alone does not establish that a model works.
+- [AI allowance policy](ai-allowance-policy.md) — user approved an attempt-based daily allowance, not a successful-question or dollar budget.

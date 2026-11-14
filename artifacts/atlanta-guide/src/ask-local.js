@@ -50,12 +50,17 @@ form.addEventListener("submit", async (event) => {
     });
     const data = await response.json();
     if (!response.ok || typeof data.answer !== "string" || !data.answer.trim()) {
+      if (response.status === 429 && data.code === "DAILY_LIMIT_REACHED") {
+        throw new Error("DAILY_LIMIT_REACHED");
+      }
       throw new Error(response.status === 429 ? "BUSY" : "UNAVAILABLE");
     }
     addMessage(data.answer, "answer");
     questionInput.value = "";
   } catch (error) {
-    errorMessage.textContent = translate(error.message === "BUSY"
+    errorMessage.textContent = translate(error.message === "DAILY_LIMIT_REACHED"
+      ? "Our AI guide has reached its daily allowance. Please try again after midnight UTC, or explore the recommendations on this page."
+      : error.message === "BUSY"
       ? "A few visitors are chatting right now. Please give us a minute and try again."
       : "Sorry, our AI guide is taking a little break. Please try again in a moment, or check the official site for the place you’re visiting.");
     errorMessage.hidden = false;

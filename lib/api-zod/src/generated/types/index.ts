@@ -8,5 +8,7 @@
 
 export * from './healthStatus';
 export * from './localAnswer';
+export * from './localLimitError';
+export * from './localLimitErrorCode';
 export * from './localQuestion';
 export * from './localQuestionLanguage';

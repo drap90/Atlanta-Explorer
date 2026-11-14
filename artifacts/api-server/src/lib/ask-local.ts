@@ -1,3 +1,5 @@
+import { reserveDailyAttempt } from "./ask-local-usage";
+
 declare const __ATLANTA_GUIDE_FACTS__: string;
 
 export const LOCAL_SYSTEM_PROMPT = `You are a friendly Atlanta local.
@@ -16,12 +18,21 @@ export function limitAnswer(text: string): string {
   return words.length < 120 ? text.trim() : `${words.slice(0, 119).join(" ")}…`;
 }
 
-export async function askGemini(question: string, language: "en" | "es" = "en"): Promise<string> {
+export async function askGemini(
+  question: string,
+  language: "en" | "es" = "en",
+  reserveAttempt: () => Promise<void> = reserveDailyAttempt,
+): Promise<string> {
   // Read secrets only at request time: a missing AI key must never crash startup.
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) throw new Error("AI_UNAVAILABLE");
   const signal = AbortSignal.timeout(25000);
-  const request = () => fetch(
+  const request = async () => {
+    // Every provider attempt, including the bounded retry, consumes a shared slot.
+    // If storage/configuration fails, do not contact Gemini.
+    await reserveAttempt();
+    signal.throwIfAborted();
+    return fetch(
     "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent",
     {
       method: "POST",
@@ -35,7 +46,8 @@ export async function askGemini(question: string, language: "en" | "es" = "en"):
         generationConfig: { temperature: 0.2, maxOutputTokens: 8192 },
       }),
     },
-  );
+    );
+  };
   let response = await request();
   if ([429, 502, 503, 504].includes(response.status)) {
     // Retry a transient provider failure once, within the original time budget.

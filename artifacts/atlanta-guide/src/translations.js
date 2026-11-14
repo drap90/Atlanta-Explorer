@@ -124,5 +124,6 @@ export const spanish = {
   "Asking…": "Preguntando…",
   "Your guide is thinking…": "Tu guía está pensando…",
   "A few visitors are chatting right now. Please give us a minute and try again.": "Hay varias personas conversando ahora. Espera un minuto y vuelve a intentarlo.",
+  "Our AI guide has reached its daily allowance. Please try again after midnight UTC, or explore the recommendations on this page.": "Nuestra guía de IA ha alcanzado su límite diario. Vuelve a intentarlo después de la medianoche UTC o explora las recomendaciones de esta página.",
   "Sorry, our AI guide is taking a little break. Please try again in a moment, or check the official site for the place you’re visiting.": "Lo sentimos, nuestra guía de IA está tomando un descanso. Vuelve a intentarlo en un momento o consulta el sitio oficial del lugar que vas a visitar.",
 };

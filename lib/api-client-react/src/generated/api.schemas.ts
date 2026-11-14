@@ -5,6 +5,18 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
+export type LocalLimitErrorCode = typeof LocalLimitErrorCode[keyof typeof LocalLimitErrorCode];
+
+
+export const LocalLimitErrorCode = {
+  DAILY_LIMIT_REACHED: 'DAILY_LIMIT_REACHED',
+} as const;
+
+export interface LocalLimitError {
+  error: string;
+  code?: LocalLimitErrorCode;
+}
+
 export type LocalQuestionLanguage = typeof LocalQuestionLanguage[keyof typeof LocalQuestionLanguage];
 
 
