@@ -237,6 +237,33 @@
         </div>
       </section>
 
+      <section class="section ask-local" id="ask-local" aria-labelledby="ask-local-title">
+        <div class="section-head">
+          <p class="section-num">05</p>
+          <h2 id="ask-local-title">Ask a Local</h2>
+          <p class="section-lede">A little Southern hospitality, powered by Gemini. Ask about anything in this guide.</p>
+        </div>
+        <div class="local-chat">
+          <div class="local-messages" id="local-messages" role="log" aria-label="Questions and AI answers" aria-live="polite" aria-relevant="additions">
+            <div class="local-message local-answer">
+              <p class="local-speaker">Your AI Atlanta guide</p>
+              <p>Hey, y'all! Wondering where to eat, what to see, or how to get around? Ask me a question about this guide.</p>
+            </div>
+          </div>
+          <form id="local-form" class="local-form">
+            <label for="local-question">Your Atlanta question</label>
+            <textarea id="local-question" name="question" rows="3" maxlength="1000" required aria-describedby="local-note" placeholder="What can I do in Atlanta for free?"></textarea>
+            <div class="local-form-actions">
+              <p id="local-status" role="status" aria-live="polite"></p>
+              <button class="btn btn-peach" id="local-submit" type="submit">Ask the guide</button>
+            </div>
+          </form>
+          <p class="local-error" id="local-error" role="alert" hidden></p>
+          <noscript><p>Please enable JavaScript to ask the AI guide a question.</p></noscript>
+        </div>
+        <p class="local-note" id="local-note">AI guide. It can make mistakes. Don't share personal info.</p>
+      </section>
+
       <section class="send-off" aria-label="Farewell">
         <p>See you on the porch.</p>
         <a class="btn btn-peach" href="#top">Back to the top</a>
@@ -255,5 +282,6 @@
       </ul>
       <p class="footer-sign">Atlanta Field Guide &middot; Made with love for the 404 &middot; <a href="#top">Back to top</a></p>
     </footer>
+    <script type="module" src="/src/ask-local.js"></script>
   </body>
 </html>

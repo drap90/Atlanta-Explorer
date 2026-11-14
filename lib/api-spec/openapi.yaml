@@ -11,6 +11,29 @@ tags:
   - name: health
     description: Health operations
 paths:
+  /ask-local:
+    post:
+      operationId: askLocal
+      summary: Ask the Atlanta AI guide a question about this page
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LocalQuestion"
+      responses:
+        "200":
+          description: A short answer grounded in the guide
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LocalAnswer"
+        "400":
+          description: Invalid question
+        "429":
+          description: Please try again shortly
+        "503":
+          description: The AI guide is temporarily unavailable
   /healthz:
     get:
       operationId: healthCheck
@@ -26,6 +49,22 @@ paths:
                 $ref: "#/components/schemas/HealthStatus"
 components:
   schemas:
+    LocalQuestion:
+      type: object
+      required: [question]
+      additionalProperties: false
+      properties:
+        question:
+          type: string
+          minLength: 1
+          maxLength: 1000
+    LocalAnswer:
+      type: object
+      required: [answer]
+      properties:
+        answer:
+          type: string
+          minLength: 1
     HealthStatus:
       type: object
       properties:
