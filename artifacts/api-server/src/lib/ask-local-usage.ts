@@ -23,7 +23,13 @@ export const RESERVE_ATTEMPT_SQL = `
     ON CONFLICT (day) DO UPDATE
       SET attempts = ask_local_daily_usage.attempts + 1
       WHERE ask_local_daily_usage.attempts < $1
-    RETURNING day
+    RETURNING day, attempts
+  ), alerts AS (
+    INSERT INTO ask_local_usage_alerts (day, threshold, attempts, allowance)
+    SELECT day, threshold, attempts, $1
+    FROM reservation CROSS JOIN unnest(ARRAY[80, 100]) AS threshold
+    WHERE attempts::numeric * 100 >= $1::numeric * threshold
+    ON CONFLICT (day, threshold) DO NOTHING
   )
   SELECT EXISTS (SELECT 1 FROM reservation) AS allowed,
     GREATEST(1, CEIL(EXTRACT(EPOCH FROM (

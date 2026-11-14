@@ -6,10 +6,10 @@ import { spawnSync } from "node:child_process";
 
 const directory = await mkdtemp(join(tmpdir(), "guide-quota-"));
 try {
-  const outfile = join(directory, "daily-usage.test.cjs");
   await build({
-    entryPoints: ["tests/daily-usage.test.ts"],
-    outfile,
+    entryPoints: ["tests/daily-usage.test.ts", "tests/usage-alerts.test.ts"],
+    outdir: directory,
+    outExtension: { ".js": ".cjs" },
     bundle: true,
     platform: "node",
     format: "cjs",
@@ -17,9 +17,12 @@ try {
     define: {
       __ATLANTA_GUIDE_FACTS__: JSON.stringify("Test page facts."),
       "process.env.GEMINI_API_KEY": JSON.stringify("test-only-dummy-key"),
+      "process.env.NODE_ENV": JSON.stringify("production"),
     },
   });
-  const result = spawnSync(process.execPath, ["--test", outfile], { stdio: "inherit" });
+  const result = spawnSync(process.execPath, ["--test",
+    join(directory, "daily-usage.test.cjs"), join(directory, "usage-alerts.test.cjs")],
+    { stdio: "inherit" });
   process.exitCode = result.status ?? 1;
 } finally {
   await rm(directory, { recursive: true, force: true });

@@ -35,6 +35,10 @@ test("shared reservations stop exactly at the cap and persist between connection
     await clients[0].query(`CREATE TABLE "${schema}".ask_local_daily_usage (
       day date PRIMARY KEY, attempts integer NOT NULL CHECK (attempts > 0)
     )`);
+    await clients[0].query(`CREATE TABLE "${schema}".ask_local_usage_alerts (
+      day date NOT NULL, threshold integer NOT NULL, attempts integer NOT NULL,
+      allowance integer NOT NULL, PRIMARY KEY (day, threshold)
+    )`);
     for (const client of clients) await client.query(`SET search_path TO "${schema}"`);
     // Yesterday's exhausted allowance must not prevent today's first reservation.
     await clients[0].query(`INSERT INTO ask_local_daily_usage VALUES (
@@ -55,6 +59,12 @@ test("shared reservations stop exactly at the cap and persist between connection
     const usage = await clients[0].query(`SELECT attempts FROM ask_local_daily_usage
       WHERE day = (statement_timestamp() AT TIME ZONE 'UTC')::date`);
     assert.equal(usage.rows[0].attempts, 7);
+    const alerts = await clients[0].query(`SELECT threshold, attempts
+      FROM ask_local_usage_alerts ORDER BY threshold`);
+    assert.deepEqual(alerts.rows, [
+      { threshold: 80, attempts: 6 },
+      { threshold: 100, attempts: 7 },
+    ]);
     // A newly checked-out connection (as after an instance restart) sees exhaustion.
     const fresh = await pool.connect();
     try {
