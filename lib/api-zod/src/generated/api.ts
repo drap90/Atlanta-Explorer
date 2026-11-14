@@ -13,10 +13,11 @@ import * as zod from 'zod';
  */
 export const askLocalBodyQuestionMax = 1000;
 
-
+export const askLocalBodyLanguageDefault = `en`;
 
 export const AskLocalBody = zod.object({
-  "question": zod.string().min(1).max(askLocalBodyQuestionMax)
+  "question": zod.string().min(1).max(askLocalBodyQuestionMax),
+  "language": zod.enum(['en', 'es']).default(askLocalBodyLanguageDefault)
 })
 
 

@@ -5,6 +5,7 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
+import type { LocalQuestionLanguage } from './localQuestionLanguage';
 
 export interface LocalQuestion {
   /**
@@ -12,4 +13,5 @@ export interface LocalQuestion {
      * @maxLength 1000
      */
   question: string;
+  language?: LocalQuestionLanguage;
 }

@@ -16,7 +16,7 @@ export function limitAnswer(text: string): string {
   return words.length < 120 ? text.trim() : `${words.slice(0, 119).join(" ")}…`;
 }
 
-export async function askGemini(question: string): Promise<string> {
+export async function askGemini(question: string, language: "en" | "es" = "en"): Promise<string> {
   // Read secrets only at request time: a missing AI key must never crash startup.
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) throw new Error("AI_UNAVAILABLE");
@@ -28,7 +28,9 @@ export async function askGemini(question: string): Promise<string> {
       headers: { "Content-Type": "application/json", "x-goog-api-key": apiKey },
       signal,
       body: JSON.stringify({
-        systemInstruction: { parts: [{ text: LOCAL_SYSTEM_PROMPT }] },
+        systemInstruction: { parts: [{ text: `${LOCAL_SYSTEM_PROMPT}\n${language === "es"
+          ? "Always answer in natural Spanish, even if the question is in English. Keep place names, restaurant names, prices, and dates exactly as written on the page. If you do not know, say so in Spanish and suggest checking the official site. If asked, say in Spanish that you are an AI. Use fewer than 120 words."
+          : "Always answer in English."}` }] },
         contents: [{ role: "user", parts: [{ text: question }] }],
         generationConfig: { temperature: 0.2, maxOutputTokens: 8192 },
       }),

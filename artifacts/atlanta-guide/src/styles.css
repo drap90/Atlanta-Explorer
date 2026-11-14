@@ -90,13 +90,14 @@ a { color: inherit; }
 .nav-links {
   list-style: none;
   display: flex;
+  flex-wrap: wrap;
   gap: .25rem;
   margin: 0;
   padding: 0;
-  overflow-x: auto;
 }
 .nav-links a {
   display: block;
+  white-space: nowrap;
   padding: .45rem .8rem;
   text-decoration: none;
   font: 500 .78rem var(--mono);
@@ -106,6 +107,10 @@ a { color: inherit; }
   transition: background-color .25s var(--ease), color .25s var(--ease);
 }
 .nav-links a:hover { background: var(--peach); color: var(--ink); }
+.language-toggle { display: block; padding: .45rem .8rem; border: 0; border-radius: 999px; background: transparent; color: inherit; font: 500 .78rem var(--mono); white-space: nowrap; cursor: pointer; }
+.language-toggle:hover { background: var(--peach); color: var(--ink); }
+.language-toggle[aria-pressed="false"] [lang="en"],
+.language-toggle[aria-pressed="true"] [lang="es"] { text-decoration: underline; text-underline-offset: .2em; }
 
 /* Hero */
 .hero {
@@ -189,7 +194,7 @@ a { color: inherit; }
   margin: 0;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   border-top: 1px solid rgba(251, 244, 232, .25);
 }
 .hero-index a {
@@ -303,8 +308,10 @@ a { color: inherit; }
 .food::before {
   content: "";
   position: absolute;
-  inset: 0 calc(50% - 50vw);
+  inset: 0;
   background: var(--clay);
+  box-shadow: 0 0 0 100vmax var(--clay);
+  clip-path: inset(0 -100vmax);
   z-index: -1;
 }
 .food { color: var(--cream); }
@@ -442,9 +449,11 @@ a { color: inherit; }
   .nav { flex-direction: column; align-items: flex-start; gap: .5rem; padding: .6rem 1rem; }
   .nav-links { width: 100%; flex-wrap: wrap; }
   .nav-links a { padding: .55rem .5rem; font-size: .65rem; }
+  .language-toggle { padding: .55rem .5rem; font-size: .65rem; }
   html { scroll-padding-top: 6.5rem; }
-  .hero-content { padding-bottom: 9rem; }
+  .hero-content { padding-bottom: 13rem; }
   .hero-index { grid-template-columns: repeat(2, 1fr); }
+  .hero-index li:last-child { grid-column: 1 / -1; }
   .hero-index a { padding: .8rem 1rem; font-size: .95rem; border-top: 1px solid rgba(251, 244, 232, .2); }
   .landmark-grid, .culture-grid { grid-template-columns: 1fr; }
   .landmark-wide, .landmark-flip { grid-template-columns: 1fr; }

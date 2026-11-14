@@ -9,3 +9,4 @@
 export * from './healthStatus';
 export * from './localAnswer';
 export * from './localQuestion';
+export * from './localQuestionLanguage';

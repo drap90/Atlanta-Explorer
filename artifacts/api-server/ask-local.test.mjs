@@ -44,6 +44,18 @@ test("Gemini uses a server header, authoritative facts, and untrusted question",
   assert.equal(await askGemini("Where can I walk?"), "Try the BeltLine Eastside Trail.");
 });
 
+test("Spanish is enforced in the system instruction, not left to the visitor question", async () => {
+  globalThis.fetch = async (_url, options) => {
+    const prompt = JSON.parse(options.body).systemInstruction.parts[0].text;
+    assert.match(prompt, /Always answer in natural Spanish/);
+    assert.match(prompt, /Keep place names, restaurant names, prices, and dates exactly/);
+    return new Response(JSON.stringify({
+      candidates: [{ finishReason: "STOP", content: { parts: [{ text: "Puedes pasear por Piedmont Park." }] } }],
+    }));
+  };
+  assert.equal(await askGemini("Where can I walk?", "es"), "Puedes pasear por Piedmont Park.");
+});
+
 test("upstream failures never reveal provider payloads", async () => {
   globalThis.fetch = async () => new Response("sensitive upstream detail", { status: 429 });
   await assert.rejects(askGemini("Where to eat?"), /^Error: AI_HTTP_429$/);
@@ -59,11 +71,10 @@ test("missing credentials fail the request, not server startup", async () => {
   await assert.rejects(askGemini("Anything"), /AI_UNAVAILABLE/);
 });
 
-test("only the requested section and script were added to the HTML", async () => {
-  const { execFileSync } = await import("node:child_process");
-  const original = execFileSync("git", ["show", "HEAD:artifacts/atlanta-guide/index.html"], { encoding: "utf8" });
-  const withoutAdditions = html
-    .replace(/      <section class="section ask-local"[\s\S]*?      <\/section>\n\n/, "")
-    .replace('    <script type="module" src="/src/ask-local.js"></script>\n', "");
-  assert.equal(withoutAdditions, original);
+test("the guide retains all sections and native section links", () => {
+  for (const id of ["landmarks", "food", "culture", "tips", "ask-local"]) {
+    assert.match(html, new RegExp(`id="${id}"`));
+    assert.match(html, new RegExp(`href="#${id}"`));
+  }
+  assert.match(html, /id="language-toggle"/);
 });

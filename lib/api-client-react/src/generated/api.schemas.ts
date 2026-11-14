@@ -5,12 +5,21 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
+export type LocalQuestionLanguage = typeof LocalQuestionLanguage[keyof typeof LocalQuestionLanguage];
+
+
+export const LocalQuestionLanguage = {
+  en: 'en',
+  es: 'es',
+} as const;
+
 export interface LocalQuestion {
   /**
      * @minLength 1
      * @maxLength 1000
      */
   question: string;
+  language?: LocalQuestionLanguage;
 }
 
 export interface LocalAnswer {

@@ -33,7 +33,7 @@ router.post("/ask-local", async (req, res): Promise<void> => {
   requestCount += 1;
   activeRequests += 1;
   try {
-    const answer = await askGemini(parsed.data.question.trim());
+    const answer = await askGemini(parsed.data.question.trim(), parsed.data.language);
     res.json(AskLocalResponse.parse({ answer }));
   } catch (error) {
     const code = error instanceof Error && /^AI_[A-Z0-9_]+$/.test(error.message)

@@ -14,3 +14,9 @@ The user subsequently requested an interactive "Ask a Local" section. Keep its b
 **Why:** The user explicitly required a server-only key, page-grounded answers under 120 words, AI disclosure when asked, and no changes to the other sections.
 
 **How to apply:** Keep the existing guide sections in HTML/CSS; do not turn the chatbot addition into a React migration or a general-purpose assistant.
+
+For English/Spanish localization, keep place names, restaurant names, prices, and dates exactly the same; preserve the layout and dark mode.
+
+**Why:** The user explicitly required these exceptions when requesting Spanish translations.
+
+**How to apply:** Keep page and chat translations centralized, and apply these protected-value rules to future copy updates and AI language instructions.
