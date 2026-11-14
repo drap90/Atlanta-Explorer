@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "Atlanta — A Local's Guide"
+description = "A photo-rich one-page Atlanta tourist guide with landmarks, signature food, culture, and practical visitor tips. Built with plain HTML and CSS, responsive navigation, and accessible images."
+version = "1.0.0"
+id = "artifacts/atlanta-guide"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 19231
+
+[services.development]
+run = "pnpm --filter @workspace/atlanta-guide run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/atlanta-guide", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/atlanta-guide/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "19231"
+BASE_PATH = "/"

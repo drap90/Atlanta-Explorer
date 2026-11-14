@@ -1,0 +1,1 @@
+- [Guide implementation constraints](guide-constraints.md) — Atlanta guide must remain plain HTML and CSS despite the web artifact scaffold.
